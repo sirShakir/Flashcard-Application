@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/beige.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/monokai.css">
+		
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+			   
+				<section>Welcome to zeyeland language practice app</section>
+				<section>User stats or metrics view </section>
+
+				<section>Create vocab card view 
+
+					<form data-parsley-validate="" id="theform" method="POST" action="/create">
+						<label for="fname">Language</label><br>
+						<select id="languageSelector" name="languageSelector">
+							<option value="Japanese">Japanese</option>
+							<option value="Spanish">Spanish</option>
+						</select>
+						<br>
+
+						<label for="lname">New word</label><br>
+						<input type="text" name="newWord" id="newWord"><br>
+
+						<label for="fname">English word</label><br>
+						<input type="text" name="englishWord" id="englishWord"><br>
+
+						<label for="lname">Type</label><br>
+						<select id="cardType" name="cardType">
+							<option value="volvo">Vocabulary</option>
+							<option value="saab">Phrase</option>
+						</select><br>
+
+						<button type="button" id="submitCard" onclick="postCard()">Card submited</button>
+
+					</form>
+
+				</section>
+
+				<section>Edit clicked vocab card view</section>
+
+				<section>Study view
+					<h5>Testing word</h5>
+					<h6>English word</h6>
+					<button type="button" id="playSound" onclick="playCard()">Play sound</button>
+					<button type="button" id="editCard" onclick="editCard()">Edit Card</button>
+					<button type="button" id="deleteCard" onclick="deleteCard()">Delete Card</button>
+
+				</section>
+				<section>Quiz view</section>
+
+			</div>
+		</div>
+
+
+
+
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+		<script src="js/p5.min.js"></script>
+		<script src="js/p5.sound.js"></script>
+		<script src="js/jquery.js"></script>
+		<script src="js/parsley.js"></script>
+		<script src="js/reveal.js"></script>
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+                hash: true,overview: true,
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/highlight/highlight.js' },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+		</script>
+
+
+		<script src="javascript/createCardFuntions.js">
+		</script>
+
+	
+
+	</body>
+</html>
