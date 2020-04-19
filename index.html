@@ -1,65 +1,111 @@
 <!doctype html>
 <html>
 	<head>
+
+		<base href="/notecards/" target="_blank">
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+		<title>zeyeland flashcard app</title>
+		<link rel="stylesheet" href="css/animate.min.css">
 
 		<link rel="stylesheet" href="css/reset.css">
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/beige.css">
+		<link rel="stylesheet" href="css/theme/sky.css">
 
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="lib/css/monokai.css">
 		
 	</head>
 	<body>
+		<style>
+		input,select,button{
+font-size: 30px;
+    height: 40px;
+}
+audio{
+width:500px;
+}
+		.reveal-header {
+    display: block;
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    z-index: 20;
+    color: #fff;
+    font-family: "Source Sans Pro", Helvetica, sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+}
+		</style>
 		<div class="reveal">
 			<div class="slides">
 			   
-				<section>Welcome to zeyeland language practice app</section>
-				<section>User stats or metrics view </section>
+				<section>
+						<h3>
+								zEyeland
+						</h3>
+						<h4>
+							audio flash card app
+						</h4>
+						<h4>
+							Foreign to english audio cards.
+						</h4>
+				</section>
 
-				<section>Create vocab card view 
+				<section>Create an audio card
 
 					<form data-parsley-validate="" id="theform" method="POST" action="/create">
-						<label for="fname">Language</label><br>
+						
 						<select id="languageSelector" name="languageSelector">
-							<option value="Japanese">Japanese</option>
-							<option value="Spanish">Spanish</option>
+							<option value="Japanese">Japanese Romaji</option>
+							<option value="Spanish">Spanish palabra</option>
+							<option value="Vietnamese">Vietnamese</option>
 						</select>
-						<br>
-
-						<label for="lname">New word</label><br>
 						<input type="text" name="newWord" id="newWord"><br>
 
-						<label for="fname">English word</label><br>
+						<label for="fname">english spelling</label>
 						<input type="text" name="englishWord" id="englishWord"><br>
 
-						<label for="lname">Type</label><br>
-						<select id="cardType" name="cardType">
-							<option value="volvo">Vocabulary</option>
-							<option value="saab">Phrase</option>
-						</select><br>
+						<span>Add title to flashcard?</span>
 
-						<button type="button" id="submitCard" onclick="postCard()">Card submited</button>
+						<input type="text" id="deckname" name="deckname"><br>
+
+						<button type="button" id="submitCard" onclick="postCard()">Procced with audio</button>
 
 					</form>
 
 				</section>
 
-				<section>Edit clicked vocab card view</section>
+				<section>
+						<select id="languageSelector2" name="languageSelector2">
+								<option value="Japanese">Japanese Romaji</option>
+								<option value="Spanish">Spanish palabra</option>
+								<option value="Vietnamese">Vietnamese</option>
+						</select>
+						<input type="text" id="deckid" name="deckid" value="all"><br>
 
-				<section>Study view
-					<h5>Testing word</h5>
-					<h6>English word</h6>
-					<button type="button" id="playSound" onclick="playCard()">Play sound</button>
-					<button type="button" id="editCard" onclick="editCard()">Edit Card</button>
-					<button type="button" id="deleteCard" onclick="deleteCard()">Delete Card</button>
+					<button type="button"  onclick="startStudyingButtonClicked()">Start Study</button>
+					<h2 id="studyWord" onclick="wordClicked()"></h2>
 
+					<button type="button" id="flipcard" onclick="wordClicked()">Flip</button>
+					<button type="button" id="nextcard" onclick="nextCard()">Next</button>
+					<button type="button" id="randomcard" onclick="randomCard()">Shuffle</button>
+					<br>
+					
+					<button type="button" id="playSound" onclick="playSound()">Play sound</button>
+					<br><audio controls id="audioEle">
+					<source src="" type="audio/wav">
+					</audio>
+					
+					<script>
+					function playSound(){
+						let xAduio = document.getElementById("audioEle");
+						xAduio.play();
+					}
+					</script>					
 				</section>
-				<section>Quiz view</section>
+
 
 			</div>
 		</div>
@@ -67,6 +113,7 @@
 
 
 
+		
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 		<script src="js/p5.min.js"></script>
 		<script src="js/p5.sound.js"></script>
@@ -90,6 +137,9 @@
 
 
 		<script src="javascript/createCardFuntions.js">
+		</script>
+
+		<script src="javascript/studyCardFunctions.js">
 		</script>
 
 	

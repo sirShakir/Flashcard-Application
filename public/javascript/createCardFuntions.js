@@ -6,7 +6,7 @@ let state = 0;
 var blobID;
 
 function setup() {
-console.log("setup was called")
+//console.log("setup was called")
   // create an audio in
   mic = new p5.AudioIn();
 
@@ -61,34 +61,48 @@ function canvasPressed() {
 
 function postCard(){
   let text1 = document.getElementById("languageSelector").value;
-  let text2 = document.getElementById("englishWord").value;
-  let text3 = document.getElementById("newWord").value;
-  let text4 = document.getElementById("cardType").value;
+  let text2 = document.getElementById("newWord").value;
+  let text3 = document.getElementById("englishWord").value;
+  //let text4 = document.getElementById("cardType").value;
+  let text5 = document.getElementById("deckname").value;
 
   let params = {
     language : text1,
-    englishWord : text2,
-    newWord : text3,
-    cardType : text4,
+    word: text2,
+    english : text3,
+    cardType : "n/a",
+    deck : text5
   }
-  //console.log(params);
 
-  const Http = new XMLHttpRequest();
-  const url='/create';
-  Http.open("POST", url,true);
-  Http.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-
-  Http.send(JSON.stringify( params ));
-   let only1 = 1;
-   Http.onreadystatechange = (e) => {
-    //console.log(Http.responseText)
-    if( only1 == 1){
-      only1++;
-      console.log("proceed with audio")
-      blobID = Http.responseText;
+  $.post("/notecards/createCard",
+  params,
+  function(data, status){
+      blobID = data._id;
+      console.log(blobID);
+      console.log("proceed with audio");
       fireAudioInstructions();
-    }
-   }
+  });
+  //console.log(params);
+ 
+  // const Http = new XMLHttpRequest();
+  // const url='/createCard';
+  // Http.open("POST", url,true);
+  // Http.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+  // Http.send(JSON.stringify( params ));
+  //  let only1 = 1;
+  //  Http.onreadystatechange = (e) => {
+  //   //console.log(Http.responseText)
+  //   //if( only1 == 1){
+  //     only1++;
+  //     blobID = Http;
+  //     console.log("proceed with audio");
+  //     console.log(blobID);
+  //     console.log( JSON.stringify( blobID.responseText) );
+  //     //fireAudioInstructions();
+  //   //}
+  //  }
+
 }
 
 //functions is fired once respones arrives with blob#
@@ -98,16 +112,15 @@ function fireAudioInstructions(){
 
 function fireAskIfWantAudio(){
   Swal.fire({
-    title: '<strong>HTML <u>example</u></strong>',
+    title: '<strong>Recording</strong>',
     icon: 'info',
     html:
-      'Recording <b>bold text</b>, ' +
       'Do you want to record audio for flashcard ' ,
     showCloseButton: true,
     showCancelButton: true,
     focusConfirm: false,
     confirmButtonText:
-      '<i class="fa fa-thumbs-up"></i> Record!',
+      '<i class="fa fa-thumbs-up"></i> Record',
     confirmButtonAriaLabel: 'Thumbs up, great!',
     cancelButtonText:
       '<i class="fa fa-thumbs-down">Cancel</i>',
@@ -130,7 +143,7 @@ function fireRecording(){
     Swal.fire({
       title: 'Recording now',
       html: 'I will close in <b></b> milliseconds.',
-      timer: 7000,
+      timer: 8000,
       timerProgressBar: true,
       onBeforeOpen: () => {
         Swal.showLoading()
@@ -189,19 +202,20 @@ function playRecordingConfirm(){
   
     soundFile.play();
     Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      title: 'Listen and confirm',
+      text: "Click cancel to redo recording",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Submit',
+      cancelButtonText: 'Cancel'
     }).then((result) => {
       if (result.value) {
         
-        sendBlob2Server(blobID);
+        sendAudioBlob2Server();
         Swal.fire(
-          'Audio submited with flashcard',
+          'Flashcard and audio submited',
           'success'
         )
       }
@@ -219,28 +233,34 @@ function fireResetForm(){
   let text3 = document.getElementById("newWord").value = "";
 }
 
-function fireSendBlobId2Server(){
-
-  const Http = new XMLHttpRequest();
-  const url='/targetID';
-  Http.open("POST", url,true);
-  Http.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-  let params = { id: blobID};
-  Http.send(JSON.stringify( params ));
-   let only1 = 1;
-   Http.onreadystatechange = (e) => {
-    //console.log(Http.responseText)
-    if( only1 == 1){ only1++
-       fireResetForm();
-    }
-   }
+function updateCardWithAudioLink(){
+  let params = {id: blobID}
+  $.post("/notecards/appendAudioLink",
+  params,
+  function(data, status){
+    console.log(data);
+    fireResetForm();
+  });
+  // const Http = new XMLHttpRequest();
+  // const url='/targetID';
+  // Http.open("POST", url,true);
+  // Http.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+  // let params = { id: blobID};
+  // Http.send(JSON.stringify( params ));
+  //  let only1 = 1;
+  //  Http.onreadystatechange = (e) => {
+  //   //console.log(Http.responseText)
+  //   if( only1 == 1){ only1++
+  //      fireResetForm();
+  //   }
+  //  }
 
 }
 
-function sendBlob2Server(){
+function sendAudioBlob2Server(){
   let soundBlob = soundFile.getBlob(); //get the recorded soundFile's blob & store it in a variable
   let formdata = new FormData() ; //create a from to of data to upload to the server
-  formdata.append('soundBlob', soundBlob,  'myfiletosave.wav') ; // append the sound blob and the name of the file. third argument will show up on the server as req.file.originalname
+  formdata.append('soundBlob', soundBlob,  blobID + '.wav') ; // append the sound blob and the name of the file. third argument will show up on the server as req.file.originalname
 
   var httpRequestOptions = {
     method: 'POST',
@@ -252,11 +272,11 @@ function sendBlob2Server(){
   // console.log(httpRequestOptions);
   // use p5 to make the POST request at our URL and with our options
   httpDo(
-    "/upload",
+    "/notecards/uploadAudio",
     httpRequestOptions,
     (successStatusCode)=>{ //if we were successful...
       console.log("uploaded recording successfully: " + successStatusCode)
-      fireSendBlobId2Server()
+      updateCardWithAudioLink();
     },
     (error)=>{console.error(error);}
   )

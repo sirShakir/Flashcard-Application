@@ -11,15 +11,20 @@ var Cards = new Schema({
     word: {
       type: String,
       required: [true, 'Please enter a word'],
-      unique: [true, 'Usernames must be unique']
+      //unique: [true, 'Usernames must be unique']
     },
-    englishword: {
+    english: {
       type: String,
       required: [true, 'Please enter english version of word'],
     },
+    link:{
+      type:String,
+      required: [false]
+    },
+    deck:{
+      type:String
+    }
   });
-
-//   Users.plugin(uniqueValidator);
-//   Users.plugin(passportLocalMongoose);
   
   module.exports = mongoose.model('Cards', Cards);
+  
